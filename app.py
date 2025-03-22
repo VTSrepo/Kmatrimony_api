@@ -1,0 +1,122 @@
+import json
+import os
+from flask import Flask,render_template, request, send_from_directory
+from read_org_master import get_org_details, validate_login, getSubscribers
+from get_profiles import get_profiles,get_profile_subscriberid,get_myshortlisting
+from subscriber_search_profiles import match_profiles, short_list_profile, star_match_profiles, remove_short_list_profile
+from read_ref_data import get_ref_details
+from create_profile import create_profile, updateProfile
+from upload import get_files, upload_image
+from flask import jsonify, make_response
+from flask_cors import CORS
+from dotenv import load_dotenv
+
+from update_profile import update_profile
+load_dotenv() 
+app = Flask(__name__, static_folder='./web', static_url_path='/')
+CORS(app)
+@app.route("/hello")
+def hello_world():
+    return "<p>Hello, World!</p>"
+
+@app.route("/")
+def index():
+    return app.send_static_file('index.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():    
+    x=validate_login(request.get_json());    
+    return make_response(jsonify(x), 200)
+
+@app.route('/getSubscriberIds', methods=['GET', 'POST'])
+def getSubscriberIds():    
+    x=getSubscribers();    
+    return make_response(jsonify(x), 200)
+
+@app.route('/getprofiles', methods=['GET', 'POST'])
+def getprofiles():
+    #print(request.args.get('filter'))
+    x=get_profiles(request.args.get('filter'));    
+    return make_response(jsonify(x), 200)
+
+@app.route('/getprofilesBySubscriberId', methods=['GET', 'POST'])
+def getprofilesBySubscriberId():
+    #print(request.args.get('filter'))
+    x=get_profile_subscriberid(request.get_json());    
+    return make_response(jsonify(x), 200)
+
+
+@app.route('/shortlistings', methods=['GET', 'POST'])
+def getShortlistedProfiles():
+    #print(request.args.get('filter'))
+    x=get_myshortlisting(request.get_json());    
+    return make_response(jsonify(x), 200)
+
+@app.route('/matchprofiles', methods=['GET', 'POST'])
+def matchprofiles():    
+    print(request.get_json())
+    x=star_match_profiles(request.get_json());    
+    return make_response(jsonify(x), 200)
+
+@app.route('/createProfile', methods=['POST'])
+def createProfile():
+    data = json.loads(request.data);      
+    create_profile(data)    
+    return make_response(jsonify({}), 200)
+
+@app.route('/shortListProfile', methods=['POST'])
+def sortListProfile():
+    data = json.loads(request.data);      
+    short_list_profile(data)    
+    return make_response(jsonify({}), 200)
+
+@app.route('/removeShortListProfile', methods=['POST'])
+def removeShortListProfile():
+    data = json.loads(request.data);      
+    remove_short_list_profile(data)    
+    return make_response(jsonify({}), 200)
+
+
+@app.route('/uploadImage', methods=['POST'])
+def uploadImage():
+    if 'file' not in request.files:
+        return 'No file part', 400
+    
+    file = request.files['file']
+    if file.filename == '':
+        return 'No selected file', 400
+    #data = json.loads(request.data);      
+    upload_image(file)    
+    return make_response(jsonify({}), 200)
+
+@app.route('/uploads/<filename>', methods=['GET'])
+def get_image(filename):
+    try:
+        if not os.path.exists('uploads'):
+            os.makedirs('uploads')
+        # This will serve the image from the 'uploads' folder
+        return send_from_directory('uploads', filename)
+    except FileNotFoundError:
+        return jsonify({"error": "Image not found"}), 404
+    
+
+@app.route('/getFileList', methods=['GET', 'POST'])
+def getFileList():
+    x=get_files(request.args.get('filter'));     
+    return x
+
+@app.route('/updateProfile', methods=['PUT'])
+def updateProfile():    
+    data = json.loads(request.data);      
+    update_profile(data)    
+    return make_response(jsonify({}), 200)
+
+@app.route('/getRef', methods=['GET', 'POST'])
+def getRefDetails():
+    refType = request.args.get('ref_type')
+    print(refType);
+    x=get_ref_details(refType);     
+    return make_response(jsonify(x), 200)
+
+if __name__ == "__main__":
+ app.run()
