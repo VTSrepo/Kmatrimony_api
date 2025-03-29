@@ -20,23 +20,23 @@ def setQuery(data):
 def starMatchingProfiles(data):
     if data['gendar'] == 'M':   
         query = """select a.*, if(b.src_profile_code is null,"Shortlist","Delist") listkey,
-	                c.girl_star,c.boy_star
+	                c.girl_star,c.boy_star, TIMESTAMPDIFF(YEAR, a.dob, CURDATE())  AS real_age
                     from  profile_master a LEFT JOIN kkkr.profile_handshake b
                     ON a.profile_code=b.tgt_profile_code 
                     LEFT JOIN (SELECT * FROM kkkr.kkkr_matching_stars where boy_star=%s) c
                     ON a.star=c.girl_star
-                    where a.gendar="F" and a.age <=%s and ( b.src_profile_code is null or b.src_profile_code=%s)
+                    where a.gendar="F" and a.active_flag="Y" and a.age <=%s and ( b.src_profile_code is null or b.src_profile_code=%s)
                     order by girl_star desc"""
         return query
     else: 
         data['gendar'] == 'F'
         query = """select a.*, if(b.src_profile_code is null,"Shortlist","Delist") listkey,
-	                c.girl_star,c.boy_star
+	                c.girl_star,c.boy_star, TIMESTAMPDIFF(YEAR, a.dob, CURDATE())  AS real_age
                     from  profile_master a LEFT JOIN kkkr.profile_handshake b
                     ON a.profile_code=b.tgt_profile_code 
                     LEFT JOIN (SELECT * FROM kkkr.kkkr_matching_stars where girl_star=%s) c
                     ON a.star=c.boy_star
-                    where a.gendar="M" and a.age >=%s and ( b.src_profile_code is null or b.src_profile_code=%s)
+                    where a.gendar="M" and a.active_flag="Y" and a.age >=%s and ( b.src_profile_code is null or b.src_profile_code=%s)
                     order by boy_star desc"""
         return query
         
@@ -133,7 +133,7 @@ def star_match_profiles(data):
                 "gendar":row[3], 
                 "profile_type":row[4],
                 "dob":row[5],
-                "age":row[6],
+                "age":row[58],
                 "caste_sect":row[7],  
                 "subsect":row[8],
                 "add_subsect":row[9], 
@@ -181,11 +181,10 @@ def star_match_profiles(data):
                 "mother_name":row[52],
                 "job_country":row[53],
                 "subscriber_id":row[54],
-                "action":row[55]
+                "action":row[55],
                 }  
             resultArray.append(x)           
         close_connection(connection)
-        print(resultArray);
         return resultArray;        
     except (Exception, mysql.connector.Error) as error:
         print("Error while getting data", error)
