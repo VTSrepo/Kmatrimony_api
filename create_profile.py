@@ -7,10 +7,10 @@ def create_profile(data):
     try:        
         connection = get_connection()
         cursor = connection.cursor()
-        profileIdRow = getProfileId()        
+        profileIdRow = getProfileId(data)        
         for row in profileIdRow:
             profileCode = row[0]
-            seq_no = row[1]                     
+            seq_no = row[1]
         currentDate =datetime.today().strftime('%Y-%m-%d')
         print(data['subscription_end_date'])
         validateInputs(data, profileCode) 

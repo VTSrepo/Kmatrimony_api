@@ -1,10 +1,12 @@
 from connection import get_connection,close_connection
-def getProfileId():
+def getProfileId(data):    
+    year = data['dob'].split('-')[0] 
+    sequenceStr = data['profile_source']+year+data['gendar']
     connection = get_connection()
     cursor = connection.cursor()
-    query = """select concat(seq_type, LPAD(last_seq_no+1,5,'0')) as pid, last_seq_no+1 as last_seq_no from vts_seq_generator"""
-    cursor.execute(query);
-    records = cursor.fetchall()
+    query = """select concat(%s, last_seq_no+1) as pid, last_seq_no+1 as last_seq_no from vts_seq_generator"""
+    cursor.execute(query,(sequenceStr,));
+    records = cursor.fetchall()    
     close_connection(connection)
     return records
 
