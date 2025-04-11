@@ -11,8 +11,7 @@ def get_last_seq():
         records = cursor.fetchall()
         print("Printing org details", "\n")
         for row in records:
-            x = {"seq_type":row[0], "org_id":row[1], "last_seq_no":row[2], "org_pad":row[3]}
-            print(x);                     
+            x = {"seq_type":row[0], "org_id":row[1], "last_seq_no":row[2], "org_pad":row[3]}                                 
         close_connection(connection)
         return x;        
     except (Exception, mysql.connector.Error) as error:
@@ -20,6 +19,5 @@ def get_last_seq():
 
 
 def appendResponse(response):
-    resp = {'status':'success', 'data':response}
-    print(resp)
+    resp = {'status':'success', 'data':response}    
     return resp;

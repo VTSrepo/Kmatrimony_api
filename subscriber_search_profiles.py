@@ -25,7 +25,7 @@ def starMatchingProfiles(data):
                     ON a.profile_code=b.tgt_profile_code 
                     LEFT JOIN (SELECT * FROM kkkr.kkkr_matching_stars where boy_star=%s) c
                     ON a.star=c.girl_star
-                    where a.gendar="F" and a.active_flag="Y" and a.age <=%s and ( b.src_profile_code is null or b.src_profile_code=%s)
+                    where a.gendar="F" and a.active_flag="Y" and TIMESTAMPDIFF(YEAR, a.dob, CURDATE()) <=%s and ( b.src_profile_code is null or b.src_profile_code=%s)
                     order by girl_star desc"""
         return query
     else: 
@@ -36,13 +36,12 @@ def starMatchingProfiles(data):
                     ON a.profile_code=b.tgt_profile_code 
                     LEFT JOIN (SELECT * FROM kkkr.kkkr_matching_stars where girl_star=%s) c
                     ON a.star=c.boy_star
-                    where a.gendar="M" and a.active_flag="Y" and a.age >=%s and ( b.src_profile_code is null or b.src_profile_code=%s)
+                    where a.gendar="M" and a.active_flag="Y" and TIMESTAMPDIFF(YEAR, a.dob, CURDATE()) >=%s and ( b.src_profile_code is null or b.src_profile_code=%s)
                     order by boy_star desc"""
         return query
         
 def match_profiles(data):
-    try:
-        print(data)
+    try:        
         connection = get_connection()
         cursor = connection.cursor()        
         sql_select_query = setQuery(data)       
@@ -109,8 +108,7 @@ def match_profiles(data):
                 "action":row[55]
                 }  
             resultArray.append(x)           
-        close_connection(connection)
-        print(resultArray);
+        close_connection(connection)        
         return resultArray;        
     except (Exception, mysql.connector.Error) as error:
         print("Error while getting data", error)
@@ -197,8 +195,7 @@ def get_profile_subscriberid(data):
         cursor = connection.cursor()        
         sql_select_query = """select * from kkkr.profile_master where subscriber_id = %s"""           
         cursor.execute(sql_select_query, (subscriberId,))
-        records = cursor.fetchall()       
-        print(records)
+        records = cursor.fetchall()               
         resultArray = [];
         for row in records:                     
             x = {

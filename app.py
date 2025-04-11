@@ -34,27 +34,23 @@ def getSubscriberIds():
     return make_response(jsonify(x), 200)
 
 @app.route('/getprofiles', methods=['GET', 'POST'])
-def getprofiles():
-    #print(request.args.get('filter'))
+def getprofiles():    
     x=get_profiles(request.args.get('filter'));    
     return make_response(jsonify(x), 200)
 
 @app.route('/getprofilesBySubscriberId', methods=['GET', 'POST'])
-def getprofilesBySubscriberId():
-    #print(request.args.get('filter'))
+def getprofilesBySubscriberId():    
     x=get_profile_subscriberid(request.get_json());    
     return make_response(jsonify(x), 200)
 
 
 @app.route('/shortlistings', methods=['GET', 'POST'])
-def getShortlistedProfiles():
-    #print(request.args.get('filter'))
+def getShortlistedProfiles():    
     x=get_myshortlisting(request.get_json());    
     return make_response(jsonify(x), 200)
 
 @app.route('/matchprofiles', methods=['GET', 'POST'])
 def matchprofiles():    
-    print(request.get_json())
     x=star_match_profiles(request.get_json());    
     return make_response(jsonify(x), 200)
 
@@ -107,14 +103,14 @@ def getFileList():
 
 @app.route('/updateProfile', methods=['PUT'])
 def updateProfile():    
-    data = json.loads(request.data);      
+    data = json.loads(request.data);
+    print('update')      
     update_profile(data)    
     return make_response(jsonify({}), 200)
 
 @app.route('/getRef', methods=['GET', 'POST'])
 def getRefDetails():
-    refType = request.args.get('ref_type')
-    print(refType);
+    refType = request.args.get('ref_type')    
     x=get_ref_details(refType);     
     return make_response(jsonify(x), 200)
 

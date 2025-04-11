@@ -7,11 +7,10 @@ from datetime import datetime
 def update_profile(data):
     try:        
         connection = get_connection()
-        cursor = connection.cursor()                
+        cursor = connection.cursor()
         currentDate =datetime.today().strftime('%Y-%m-%d')
         date_obj =datetime.strptime(data['subscription_end_date'],'%a, %d %b %Y %H:%M:%S GMT')
         subscription_end_date = date_obj.strftime('%Y-%m-%d')
-        print(subscription_end_date)          
         cursor.execute("""UPDATE profile_master SET profile_source=%s,
                         profile_name=%s,  
                         gendar=%s,
@@ -128,6 +127,7 @@ def update_profile(data):
         print("Error while inserting data", error)
 
 def validateInputs(data, profCode):
+    print(profCode)
     data_map = ['profile_source', 'profile_code', 
         'profile_name',  
         'gendar' ,
@@ -169,7 +169,7 @@ def validateInputs(data, profCode):
         if key == 'profile_code':
             data[key] = profCode            
         if not key in data:
-            print(key)
+            print('not found')            
             data[key]=None               
     return data     
 

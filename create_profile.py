@@ -11,12 +11,10 @@ def create_profile(data):
         for row in profileIdRow:
             profileCode = row[0]
             seq_no = row[1]
-        currentDate =datetime.today().strftime('%Y-%m-%d')
-        print(data['subscription_end_date'])
+        currentDate =datetime.today().strftime('%Y-%m-%d')        
         validateInputs(data, profileCode) 
         date_obj =datetime.strptime(data['subscription_end_date'],'%a, %d %b %Y %H:%M:%S GMT')
-        subscription_end_date = date_obj.strftime('%Y-%m-%d')
-        print(subscription_end_date)          
+        subscription_end_date = date_obj.strftime('%Y-%m-%d')                 
         cursor.execute("""INSERT INTO profile_master(profile_source,
         profile_code, 
         profile_name,  
