@@ -285,3 +285,20 @@ def remove_short_list_profile(data):
          
     except (Exception) as error:
         print("Error while inserting data", error)
+
+def change_pwd(data):
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        query = """UPDATE kkkr.user_master SET passkey=%s where subscriber_id=%s"""             
+        input_data = (data['newPwd'], data['subscriber_id'])
+        cursor.execute(query,input_data);
+        connection.commit()        
+        close_connection(connection)
+    except:
+        print("Failed to update record to database: {}".format())
+    finally:
+        if connection.is_connected():
+            cursor.close()
+            connection.close()
+            print("MySQL connection is closed")
