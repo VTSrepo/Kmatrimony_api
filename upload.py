@@ -24,7 +24,7 @@ def allowed_file(filename):
 def upload_image(file):
     try:        
         if file and allowed_file(file.filename):            
-        # Secure the filename and save the file           
+        # Secure the filename and save the file  
             filename = file.filename            
             file.save(os.path.join('uploads', filename))
             return {'message':'Uploaded'}
@@ -45,6 +45,20 @@ def get_files(profCode):
         return jsonify({'files': files}), 200
     except FileNotFoundError:
         return jsonify({'error': 'Directory not found'}), 404
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+
+def delete_file_name(filename):
+    # Sanitize the filename    
+    file_path = os.path.join(UPLOAD_FOLDER, filename)    
+
+    if not os.path.exists(file_path):
+        return jsonify({'error': 'File does not exist'}), 404
+
+    try:
+        os.remove(file_path)
+        return jsonify({'message': f'{filename} deleted successfully'}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 

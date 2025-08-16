@@ -6,7 +6,7 @@ from get_profiles import get_profiles,get_profile_subscriberid,get_myshortlistin
 from subscriber_search_profiles import match_profiles, short_list_profile, star_match_profiles, remove_short_list_profile, change_pwd
 from read_ref_data import get_ref_details
 from create_profile import create_profile, updateProfile
-from upload import get_files, upload_image
+from upload import delete_file_name, get_files, upload_image
 from flask import jsonify, make_response
 from flask_cors import CORS
 from dotenv import load_dotenv
@@ -95,6 +95,15 @@ def get_image(filename):
     except FileNotFoundError:
         return jsonify({"error": "Image not found"}), 404
     
+
+@app.route('/deleteFile', methods=['GET'])
+def delete_file():
+    # data = request.get_json()
+    filename = request.args.get('filename');     
+    if not filename:
+        return jsonify({'error': 'Filename is required'}), 400
+    return delete_file_name(filename)
+      
 
 @app.route('/getFileList', methods=['GET', 'POST'])
 def getFileList():
