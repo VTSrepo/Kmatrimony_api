@@ -54,7 +54,7 @@ def getSubscribers():
     try:        
         connection = get_connection()
         cursor = connection.cursor()        
-        cursor.execute('SELECT subscriber_id, subscriber_name, subscription_upto FROM user_master where user_type="S"')
+        cursor.execute('SELECT a.subscriber_id, a.subscriber_name, a.subscription_upto FROM user_master a  where user_type="S" and not exists  ( select b.subscriber_id from profile_master b where a.subscriber_id=b.subscriber_id)')
         records = cursor.fetchall()        
         subscriberList = []               
         if len(records) == 0:

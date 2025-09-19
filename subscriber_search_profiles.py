@@ -22,10 +22,10 @@ def starMatchingProfiles(data):
         query = """select a.*, if(b.src_profile_code is null,"Shortlist","Delist") listkey,
 	                c.girl_star,c.boy_star, TIMESTAMPDIFF(YEAR, a.dob, CURDATE())  AS real_age
                     from  profile_master a LEFT JOIN kkkr.profile_handshake b
-                    ON a.profile_code=b.tgt_profile_code 
+                    ON a.profile_code=b.tgt_profile_code and b.src_profile_code=%s
                     LEFT JOIN (SELECT * FROM kkkr.kkkr_matching_stars where boy_star=%s) c
                     ON a.star=c.girl_star
-                    where a.gendar="F" and a.active_flag="Y" and TIMESTAMPDIFF(YEAR, a.dob, CURDATE()) <=%s and ( b.src_profile_code is null or b.src_profile_code=%s)
+                    where a.gendar="F" and a.active_flag="Y" and TIMESTAMPDIFF(YEAR, a.dob, CURDATE()) <=%s                    
                     order by girl_star desc"""
         return query
     else: 
@@ -33,10 +33,10 @@ def starMatchingProfiles(data):
         query = """select a.*, if(b.src_profile_code is null,"Shortlist","Delist") listkey,
 	                c.girl_star,c.boy_star, TIMESTAMPDIFF(YEAR, a.dob, CURDATE())  AS real_age
                     from  profile_master a LEFT JOIN kkkr.profile_handshake b
-                    ON a.profile_code=b.tgt_profile_code 
+                    ON a.profile_code=b.tgt_profile_code and b.src_profile_code=%s
                     LEFT JOIN (SELECT * FROM kkkr.kkkr_matching_stars where girl_star=%s) c
                     ON a.star=c.boy_star
-                    where a.gendar="M" and a.active_flag="Y" and TIMESTAMPDIFF(YEAR, a.dob, CURDATE()) >=%s and ( b.src_profile_code is null or b.src_profile_code=%s)
+                    where a.gendar="M" and a.active_flag="Y" and TIMESTAMPDIFF(YEAR, a.dob, CURDATE()) >=%s                    
                     order by boy_star desc"""
         return query
         
@@ -120,7 +120,7 @@ def star_match_profiles(data):
         cursor = connection.cursor()        
         sql_select_query = starMatchingProfiles(data)       
         
-        cursor.execute(sql_select_query, (data['star'],data['age'],data['profile_code']))
+        cursor.execute(sql_select_query, (data['profile_code'],data['star'],data['age']))
         records = cursor.fetchall()
         resultArray = [];
         for row in records:                     
