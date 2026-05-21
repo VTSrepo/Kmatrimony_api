@@ -3,7 +3,7 @@ import os
 from flask import Flask,render_template, request, send_from_directory
 from read_org_master import get_org_details, validate_login, getSubscribers
 from get_profiles import get_profiles,get_profile_subscriberid,get_myshortlisting
-from subscriber_search_profiles import match_profiles, short_list_profile, star_match_profiles, remove_short_list_profile, change_pwd
+from subscriber_search_profiles import match_profiles, search_profiles_public, short_list_profile, star_match_profiles, remove_short_list_profile, change_pwd
 from read_ref_data import get_ref_details
 from create_profile import create_profile, updateProfile
 from upload import delete_file_name, get_files, upload_image
@@ -127,6 +127,14 @@ def getRefDetails():
 def changePwd():
     data = json.loads(request.data);    
     x=change_pwd(data);     
+    return make_response(jsonify(x), 200)
+
+@app.route('/searchPublic', methods=['GET', 'POST'])
+def searchPublicProfiles():
+    print(request.data)
+    data = json.loads(request.data);
+    print(data)     
+    x=search_profiles_public(data);    
     return make_response(jsonify(x), 200)
 
 if __name__ == "__main__":

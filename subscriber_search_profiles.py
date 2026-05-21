@@ -302,3 +302,63 @@ def change_pwd(data):
             cursor.close()
             connection.close()
             print("MySQL connection is closed")
+
+def search_profiles_public(data):
+    try:
+        params = []      
+        connection = get_connection()
+        cursor = connection.cursor()        
+        # sql_select_query = """SELECT Profile_code, Profile_name,gendar,dob,caste_sect,subsect,gothram,star,rasi,job_location,annual_income,salary_currency 
+        #                     FROM kkkr.profile_master where active_flag="Y" and gothram = %s and caste_sect = %s"""  
+
+        sql = """
+                SELECT Profile_code, Profile_name, gendar, dob, caste_sect, subsect,
+                    gothram, star, rasi, job_location, annual_income, salary_currency
+                FROM kkkr.profile_master
+                WHERE active_flag = "Y"
+                """               
+
+        # Add conditions only if data has values
+        if data.get("gothram"):
+            sql += " AND gothram = %s"
+            params.append(data["gothram"])            
+
+        if data.get("caste_sect"):
+            sql += " AND caste_sect = %s"
+            params.append(data["caste_sect"])
+        
+        if data.get("subsect"):
+            sql += " AND subsect = %s"
+            params.append(data["subsect"])
+
+        if data.get("rasi"):
+            sql += " AND rasi = %s"
+            params.append(data["rasi"])
+
+        if data.get("star"):
+            sql += " AND star = %s"
+            params.append(data["star"])        
+
+        cursor.execute(sql, tuple(params))
+        records = cursor.fetchall()               
+        resultArray = [];
+        for row in records:                    
+            x = {              
+                "profile_code":row[0], 
+                "profile_name":row[1],
+                "gendar":row[2],                 
+                "dob":row[3],                
+                "caste_sect":row[4],  
+                "subsect":row[5],                
+                "gothram":row[6],
+                "star":row[7],                
+                "rasi":row[8],
+                "annual_income":row[10], 
+                "job_location":row[9],
+                "salary_currency": row[11]                
+                }  
+            resultArray.append(x)           
+        close_connection(connection)
+        return resultArray;        
+    except (Exception, mysql.connector.Error) as error:
+        print("Error while getting data", error)

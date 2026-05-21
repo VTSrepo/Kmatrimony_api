@@ -10,10 +10,10 @@ def get_connection():
     #                                      password=os.environ.get('KKKR_PASSWORD'),
     #                                      port=os.environ.get('KKKR_PORT'))
     # return connection
-    connection = mysql.connector.connect(host='172.232.120.164',
+    connection = mysql.connector.connect(host='localhost',
                                          database='kkkr',
-                                         user='kkkr',
-                                         password='Rln@2025mar',
+                                         user='root',
+                                         password='Ashrith@26',
                                          port='3306')
     return connection
 
