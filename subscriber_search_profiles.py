@@ -337,7 +337,11 @@ def search_profiles_public(data):
 
         if data.get("star"):
             sql += " AND star = %s"
-            params.append(data["star"])        
+            params.append(data["star"])
+
+        if data.get("gendar"):
+            sql += " AND gendar = %s"
+            params.append(data["gendar"])         
 
         cursor.execute(sql, tuple(params))
         records = cursor.fetchall()               

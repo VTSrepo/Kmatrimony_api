@@ -15,6 +15,11 @@ def get_connection():
                                          user='kkkr',
                                          password='Rln@2025mar',
                                          port='3306')
+    # connection = mysql.connector.connect(host='localhost',
+    #                                      database='kkkr',
+    #                                      user='root',
+    #                                      password='Ashrith@26',
+    #                                      port='3306')
     return connection
 
 def close_connection(connection):
